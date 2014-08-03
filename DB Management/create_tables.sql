@@ -3,10 +3,29 @@ drop table orders;
 drop table ticket;
 drop table station;
 drop table card;
-drop table user_roles;
 drop table all_user;
 
+drop table ads;
+drop table statistics;
+
+create table ads (
+	id number(10) primary key,
+	ad_url varchar2(100)
+);
+
+create table statistics (
+	id number(10) primary key,
+	username varchar2(20),
+	count number(10),
+	ads_id number(10),
+	login_time timestamp,
+	logout_time timestamp,
+	constraint stat_ads_fk
+	foreign key (ads_id) references ads(id)
+);
+
 -- Create table all_user
+-- type: 'c' means 'customers', 'a' means 'administrators'
 create table all_user (
 	id number(10) primary key,
 	username varchar2(20) not null unique,
@@ -15,19 +34,11 @@ create table all_user (
 	first_name varchar2(20),
 	last_name varchar2(20),
 	password varchar2(50) not null,
+	type char(1) not null,
 	zip_code char(5),
 	street varchar2(20),
 	city varchar2(20),
-	state char(2),
-	enabled number(1) not null
-);
-
--- Create table authority
-create table user_roles(
-	role_id number(10) primary key,
-	authority varchar2(10) not null,
-	id number(10) not null,
-	constraint user_authority_fk foreign key (id) references all_user(id)
+	state char(2)
 );
 
 -- Create table card
@@ -79,4 +90,3 @@ create table orders (
 	constraint orders_ticket_fk
 		foreign key (ticket_id) references ticket (id)
 );
-commit;
